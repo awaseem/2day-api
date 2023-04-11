@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
+    "target": "ESNext",
+    "module": "ESNext",
     "moduleResolution": "NodeNext",
-    "target": "ES2020",
     "sourceMap": true,
     "strict": true,
     "outDir": "dist"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "ts-node": {
+    "esm": true
+  }
 }
