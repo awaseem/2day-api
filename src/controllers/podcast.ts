@@ -1,10 +1,9 @@
 import { Script } from "@prisma/client";
 import { uploadBuffer } from "../models/file.js";
-import { getScript, updatePodcastFile } from "../models/scripts.js";
+import { updatePodcastFile } from "../models/scripts.js";
 import { generateVoiceFromText } from "../models/voice.js";
 import { ReturnPromise, retData, retError } from "../util/return.js";
 import { generateScriptForSource } from "./scripts.js";
-import { error } from "console";
 
 export async function generatePodcastFromSourceId(
   accountId: string,
@@ -20,7 +19,6 @@ export async function generatePodcastFromSourceId(
     }
 
     const scriptId = script.id;
-
     const audioBuffer = await generateVoiceFromText(script.content);
     const filePath = await uploadBuffer(scriptId, audioBuffer);
     const updatedScript = await updatePodcastFile(scriptId, filePath);
