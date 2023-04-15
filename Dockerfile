@@ -12,6 +12,8 @@ RUN npm ci --include=dev
 
 RUN npm run build 
 
+RUN npm run db:gen
+
 USER node
 
 CMD ["dumb-init", "node", "dist/index.js"]

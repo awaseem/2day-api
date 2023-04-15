@@ -7,7 +7,8 @@
   "scripts": {
     "build": "tsc",
     "start": "nodemon src/index.ts",
-    "db:push": "npx prisma db push"
+    "db:push": "npx prisma db push",
+    "db:gen": "npx prisma generate"
   },
   "keywords": [],
   "author": "",
