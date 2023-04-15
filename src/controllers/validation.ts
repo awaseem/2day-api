@@ -12,8 +12,8 @@ const CreateSourceBody = z.object({
   url: z.string().url(),
 });
 
-const CreateScriptBody = z.object({
-  sourceId: z.string().uuid(),
+const GetScriptsBody = z.object({
+  sourceIds: z.array(z.string().uuid()),
 });
 
 const CreatePodcastBody = z.object({
@@ -55,11 +55,11 @@ export function validCreateSource(
   }
 }
 
-export function validCreateScript(
+export function validGetScripts(
   body: unknown
-): Return<z.infer<typeof CreateScriptBody>> {
+): Return<z.infer<typeof GetScriptsBody>> {
   try {
-    const res = CreateScriptBody.parse(body);
+    const res = GetScriptsBody.parse(body);
     return retData(res);
   } catch (error) {
     return retError(error);

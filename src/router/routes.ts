@@ -2,11 +2,11 @@ import fastify from "fastify";
 import { addSource, getSources } from "../controllers/sources.js";
 import {
   validCreatePodcast,
-  validCreateScript,
   validCreateSource,
+  validGetScripts,
   validateAccountId,
 } from "../controllers/validation.js";
-import { generateScriptForSource } from "../controllers/scripts.js";
+import { getScriptsFromSourceIds } from "../controllers/scripts.js";
 import { generatePodcastFromSourceId } from "../controllers/podcast.js";
 
 const server = fastify({ logger: true });
@@ -62,34 +62,30 @@ server.post("/v1/source", async (request, reply) => {
 });
 
 // Scripts
-server.post("/v1/script", async (request, reply) => {
+server.post("/v1/scripts", async (request, reply) => {
   const { headers, body } = request;
 
-  const { data: validHeaders, error: headerError } = await validateAccountId(
+  const { data: account, error: accountError } = await validateAccountId(
     headers
   );
-  if (headerError) {
-    reply.status(400).send({ message: headerError.message });
+  if (accountError) {
+    reply.status(400).send({ message: accountError.message });
     return;
   }
 
-  const { data: validScriptBody, error: createScriptError } =
-    validCreateScript(body);
-  if (createScriptError) {
-    reply.status(400).send({ message: createScriptError.message });
+  const { data: getScriptsBody, error: getScriptsError } =
+    validGetScripts(body);
+  if (getScriptsError) {
+    reply.status(400).send({ message: getScriptsError.message });
     return;
   }
 
-  const { data, error } = await generateScriptForSource(
-    validHeaders.accountId,
-    validScriptBody.sourceId
+  const scripts = await getScriptsFromSourceIds(
+    account.accountId,
+    getScriptsBody.sourceIds
   );
-  if (error) {
-    reply.status(500).send({ message: error.message });
-    return;
-  }
 
-  reply.status(200).send(data);
+  return reply.status(200).send(scripts);
 });
 
 // Podcast

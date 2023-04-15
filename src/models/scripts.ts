@@ -14,12 +14,24 @@ export async function createScript(
   });
 }
 
-export async function getScriptsForSource(accountId: string, sourceId: string) {
+export async function getScriptsForSources(
+  accountId: string,
+  sources: string[]
+) {
   return db.script.findMany({
     where: {
       accountId,
-      sourceId,
+      sourceId: {
+        in: sources,
+      },
     },
+    include: {
+      source: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 3,
   });
 }
 
