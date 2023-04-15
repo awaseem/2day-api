@@ -12,8 +12,11 @@ import { createNewAccount } from "../controllers/account.js";
 
 const server = fastify({ logger: true });
 
+// Status
+server.get("/status", async (_request, reply) => reply.status(200).send("👍"));
+
 // Accounts
-server.post("/v1/account", async (request, reply) => {
+server.post("/v1/account", async (_request, reply) => {
   if (process.env.NODE_ENV === "production") {
     return reply.status(404).send("Not Found");
   }
