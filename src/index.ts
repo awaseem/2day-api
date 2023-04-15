@@ -1,7 +1,10 @@
+import dotenv from "dotenv";
 import { api } from "./router/routes.js";
 
 async function main() {
   try {
+    dotenv.config();
+
     await api.listen({ port: 3000 });
   } catch (err) {
     api.log.error(err);

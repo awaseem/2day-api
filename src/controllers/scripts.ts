@@ -1,6 +1,9 @@
 import { getTextFromUrl } from "../models/html.js";
 import { parseRss } from "../models/rss.js";
 import { getSource } from "../models/source.js";
+import { retError } from "../util/return.js";
+
+const MAX_ITEMS = 3;
 
 export async function generateScriptForSource(
   accountId: string,
@@ -14,12 +17,15 @@ export async function generateScriptForSource(
 
     const parsedRssItems = await parseRss(source.url);
 
-    const [firstItem] = parsedRssItems;
-    const text = await getTextFromUrl(firstItem.link);
+    const topItems = parsedRssItems
+      .slice(0, MAX_ITEMS)
+      .map(item => getTextFromUrl(item.link));
+    const text = await Promise.all(topItems);
+
     console.log(text);
 
     return parsedRssItems;
   } catch (error) {
-    console.error("Failed to generate script for source", error);
+    return retError(error);
   }
 }
