@@ -84,12 +84,16 @@ server.post("/v1/script", async (request, reply) => {
     return;
   }
 
-  const data = await generateScriptForSource(
+  const { data, error } = await generateScriptForSource(
     validHeaders.accountId,
     validScriptBody.sourceId
   );
+  if (error) {
+    reply.status(500).send({ message: error.message });
+    return;
+  }
 
-  reply.status(200).send(data);
+  reply.status(200).send({ script: data });
 });
 
 export const api = server;
