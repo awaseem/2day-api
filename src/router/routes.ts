@@ -7,10 +7,24 @@ import {
   validateAccountId,
 } from "../controllers/validation.js";
 import { getScriptsFromSourceIds } from "../controllers/scripts.js";
-import { generatePodcastFromSourceId } from "../controllers/podcast.js";
 import { addGenPodcastJob } from "../queue/podcasts.js";
+import { createNewAccount } from "../controllers/account.js";
 
 const server = fastify({ logger: true });
+
+// Accounts
+server.post("/v1/account", async (request, reply) => {
+  if (process.env.NODE_ENV === "production") {
+    return reply.status(404).send("Not Found");
+  }
+
+  const { data, error } = await createNewAccount();
+  if (error) {
+    return reply.status(500).send(error.message);
+  }
+
+  return reply.status(200).send(data);
+});
 
 // Sources
 server.get("/v1/sources", async (request, reply) => {

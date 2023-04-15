@@ -10,6 +10,7 @@ generator client {
 
 model Account {
   id        String   @id @default(uuid())
+  apiKey    String
   createdAt DateTime @default(now())
 
   sources Source[]

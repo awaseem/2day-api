@@ -1,9 +1,10 @@
-import { Account } from "@prisma/client";
 import { db } from "../lib/prisma.js";
 
-export async function createAccount() {
+export async function createAccount(apiKeyHash: string) {
   return db.account.create({
-    data: {},
+    data: {
+      apiKey: apiKeyHash,
+    },
   });
 }
 
