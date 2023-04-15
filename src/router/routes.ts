@@ -31,22 +31,27 @@ server.post("/v1/account", async (_request, reply) => {
 
 // Sources
 server.get("/v1/sources", async (request, reply) => {
-  const { headers } = request;
-  const { data: validData, error: validateError } = await validateAccountId(
-    headers
-  );
-  if (validateError) {
-    reply.status(400).send({ message: validateError.message });
-    return;
-  }
+  try {
+    const { headers } = request;
+    const { data: validData, error: validateError } = await validateAccountId(
+      headers
+    );
+    if (validateError) {
+      reply.status(400).send({ message: validateError.message });
+      return;
+    }
 
-  const { data, error } = await getSources(validData.accountId);
-  if (error) {
-    reply.status(500).send({ message: error.message });
-    return;
-  }
+    const { data, error } = await getSources(validData.accountId);
+    if (error) {
+      reply.status(500).send({ message: error.message });
+      return;
+    }
 
-  reply.status(200).send({ data });
+    reply.status(200).send({ data });
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 });
 
 server.post("/v1/source", async (request, reply) => {
