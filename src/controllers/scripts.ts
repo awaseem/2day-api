@@ -26,7 +26,7 @@ export async function generateScriptForSource(
       throw new Error("Failed to create script");
     }
 
-    const script = await createScript(accountId, content);
+    const script = await createScript(accountId, sourceId, content);
 
     return retData(script);
   } catch (error) {

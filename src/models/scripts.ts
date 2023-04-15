@@ -1,11 +1,24 @@
-import { Script } from "@prisma/client";
 import { db } from "../lib/prisma.js";
 
-export async function createScript(accountId: string, content: string) {
+export async function createScript(
+  accountId: string,
+  sourceId: string,
+  content: string
+) {
   return db.script.create({
     data: {
       accountId,
       content,
+      sourceId,
+    },
+  });
+}
+
+export async function getScriptsForSource(accountId: string, sourceId: string) {
+  return db.script.findMany({
+    where: {
+      accountId,
+      sourceId,
     },
   });
 }

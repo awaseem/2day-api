@@ -24,6 +24,8 @@ model Source {
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
   accountId String
 
+  scripts Script[]
+
   @@index([accountId])
 }
 
@@ -35,5 +37,9 @@ model Script {
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
   accountId String
 
+  Source   Source? @relation(fields: [sourceId], references: [id])
+  sourceId String?
+
   @@index([accountId])
+  @@index([sourceId])
 }

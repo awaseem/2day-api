@@ -9,6 +9,7 @@ export async function uploadBuffer(scriptId: string, buffer: Buffer) {
     .from(BUCKET_NAME)
     .upload(fileName, buffer, {
       contentType: "audio/mpeg",
+      upsert: true,
     });
   if (error) {
     throw error;
