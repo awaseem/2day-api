@@ -1,9 +1,12 @@
+import { Account } from "@prisma/client";
 import { createAccount } from "../models/account.js";
+import { ReturnPromise, retData, retError } from "../util/return.js";
 
-export async function createNewAccount() {
+export async function createNewAccount(): ReturnPromise<Account> {
   try {
-    return createAccount();
+    const account = await createAccount();
+    return retData(account);
   } catch (error) {
-    console.error("Failed to create account", error);
+    return retError(error);
   }
 }

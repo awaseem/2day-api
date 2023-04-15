@@ -1,3 +1,12 @@
-import { hello } from "./hello.js";
+import { api } from "./router/routes.js";
 
-console.log(hello);
+async function main() {
+  try {
+    await api.listen({ port: 3000 });
+  } catch (err) {
+    api.log.error(err);
+    process.exit(1);
+  }
+}
+
+main();
