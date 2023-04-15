@@ -7,6 +7,9 @@ import {
   validate,
 } from "../controllers/validation.js";
 import { generateScriptForSource } from "../controllers/scripts.js";
+import { generateVoiceFromText } from "../models/voice.js";
+import { Readable } from "stream";
+import { createReadStream } from "fs";
 
 const server = fastify({ logger: true });
 
@@ -93,7 +96,14 @@ server.post("/v1/script", async (request, reply) => {
     return;
   }
 
-  reply.status(200).send({ script: data });
+  reply.status(200).send(data);
+});
+
+// Podcast
+server.post("/v1/podcast", async (request, reply) => {
+  const buffer = await generateVoiceFromText("Hello world");
+
+  return reply.type("audio/mpeg").send(buffer);
 });
 
 export const api = server;
