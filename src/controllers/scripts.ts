@@ -4,6 +4,7 @@ import { parseRss } from "../models/rss.js";
 import { createScript } from "../models/scripts.js";
 import { getSource } from "../models/source.js";
 import { ReturnPromise, retData, retError } from "../util/return.js";
+import { sanitizeString } from "../util/sanitize.js";
 
 const MAX_ITEMS = 3;
 
@@ -26,7 +27,8 @@ export async function generateScriptForSource(
       throw new Error("Failed to create script");
     }
 
-    const script = await createScript(accountId, sourceId, content);
+    const cleanContent = sanitizeString(content);
+    const script = await createScript(accountId, sourceId, cleanContent);
 
     return retData(script);
   } catch (error) {

@@ -7,7 +7,7 @@ import {
   validateAccountId,
 } from "../controllers/validation.js";
 import { generateScriptForSource } from "../controllers/scripts.js";
-import { generatePodcastFromScript } from "../controllers/podcast.js";
+import { generatePodcastFromSourceId } from "../controllers/podcast.js";
 
 const server = fastify({ logger: true });
 
@@ -111,9 +111,9 @@ server.post("/v1/podcast", async (request, reply) => {
     return;
   }
 
-  const { data, error } = await generatePodcastFromScript(
+  const { data, error } = await generatePodcastFromSourceId(
     validHeaders.accountId,
-    validPodcastBody.scriptId
+    validPodcastBody.sourceId
   );
   if (error) {
     reply.status(500).send({ message: error.message });

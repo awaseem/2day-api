@@ -17,7 +17,7 @@ const CreateScriptBody = z.object({
 });
 
 const CreatePodcastBody = z.object({
-  scriptId: z.string().uuid(),
+  sourceId: z.string().uuid(),
 });
 
 export async function validateAccountId(
