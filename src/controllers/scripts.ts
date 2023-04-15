@@ -1,16 +1,11 @@
 import { Script } from "@prisma/client";
-import { createPodcastScript, summarizeText } from "../models/ai.js";
+import { createPodcastScript } from "../models/ai.js";
 import { parseRss } from "../models/rss.js";
 import { createScript } from "../models/scripts.js";
 import { getSource } from "../models/source.js";
 import { ReturnPromise, retData, retError } from "../util/return.js";
 
-const MAX_ITEMS = 5;
-
-export async function getSummaryFromLink(link: string) {
-  const summary = await summarizeText(link);
-  return summary;
-}
+const MAX_ITEMS = 3;
 
 export async function generateScriptForSource(
   accountId: string,
@@ -24,14 +19,9 @@ export async function generateScriptForSource(
 
     const parsedRssItems = await parseRss(source.url);
 
-    const topSummaries = await Promise.all(
-      parsedRssItems
-        .slice(0, MAX_ITEMS)
-        .map(item => getSummaryFromLink(item.link))
-    );
-    const cleanSummaries = topSummaries.filter(Boolean) as string[];
+    const links = parsedRssItems.map(item => item.link).splice(0, MAX_ITEMS);
 
-    const content = await createPodcastScript(cleanSummaries);
+    const content = await createPodcastScript(links);
     if (!content) {
       throw new Error("Failed to create script");
     }
