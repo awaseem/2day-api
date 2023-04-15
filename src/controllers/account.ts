@@ -4,7 +4,7 @@ import { ReturnPromise, retData, retError } from "../util/return.js";
 import { hashKey, secureUuid } from "../util/key.js";
 
 export interface AccountApi {
-  account: Account;
+  accountId: string;
   apiKey: string;
 }
 
@@ -13,7 +13,7 @@ export async function createNewAccount(): ReturnPromise<AccountApi> {
     const apiKey = secureUuid();
     const keyHash = await hashKey(apiKey);
     const account = await createAccount(keyHash);
-    return retData({ account, apiKey });
+    return retData({ accountId: account.id, apiKey });
   } catch (error) {
     return retError(error);
   }

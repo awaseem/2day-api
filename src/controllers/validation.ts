@@ -5,6 +5,7 @@ import { z } from "zod";
 import { getAccount } from "../models/account.js";
 import { getSource } from "../models/source.js";
 import { Source } from "@prisma/client";
+import { isValidKey } from "../util/key.js";
 
 export interface Valid {
   accountId: string;
@@ -28,12 +29,21 @@ export async function validateAccountId(
   try {
     const accountId = headers["x-account-id"];
     if (!accountId || typeof accountId !== "string") {
-      throw new Error("no account Id found");
+      throw new Error("no account id found");
+    }
+    const apiKey = headers["x-account-api-key"];
+    if (!apiKey || typeof apiKey !== "string") {
+      throw new Error("no account api key found");
     }
 
     const account = await getAccount(accountId);
     if (!account) {
       throw new Error("no account found");
+    }
+
+    const isValid = await isValidKey(apiKey, account.apiKey);
+    if (!isValid) {
+      throw new Error("invalid");
     }
 
     return {
