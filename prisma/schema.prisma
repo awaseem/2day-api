@@ -8,23 +8,32 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
+model Account {
   id        String   @id @default(uuid())
-  email     String
   createdAt DateTime @default(now())
 
-  posts Post[]
-
-  @@index([email])
+  sources Source[]
+  scripts Script[]
 }
 
-model Post {
+model Source {
   id        String   @id @default(uuid())
-  post      String   @db.LongText
+  url       String   @db.VarChar(2083)
   createdAt DateTime @default(now())
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId String
 
-  @@index([userId])
+  @@index([accountId])
+}
+
+model Script {
+  id        String   @id @default(uuid())
+  content   String   @db.LongText
+  createdAt DateTime @default(now())
+
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId String
+
+  @@index([accountId])
 }
