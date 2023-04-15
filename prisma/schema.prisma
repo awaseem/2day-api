@@ -1,5 +1,5 @@
 datasource db {
-  provider     = "mysql"
+  provider     = "postgresql"
   url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
@@ -29,7 +29,7 @@ model Source {
 
 model Script {
   id        String   @id @default(uuid())
-  content   String   @db.LongText
+  content   String   @db.Text
   createdAt DateTime @default(now())
 
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
