@@ -15,5 +15,12 @@ export async function uploadBuffer(scriptId: string, buffer: Buffer) {
     throw error;
   }
 
-  return data.path;
+  const { data: fileUrl } = await storage
+    .from(BUCKET_NAME)
+    .getPublicUrl(fileName);
+  if (error) {
+    throw error;
+  }
+
+  return fileUrl.publicUrl;
 }
