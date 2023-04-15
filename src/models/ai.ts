@@ -21,7 +21,7 @@ export async function summarizeText(text: string) {
 export async function createPodcastScript(summaries: string[]) {
   const completion = await ai.createChatCompletion({
     model: "gpt-3.5-turbo",
-    temperature: 1.3,
+    temperature: 1.5,
     messages: [
       {
         role: "user",

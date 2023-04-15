@@ -2,14 +2,13 @@ import fastify from "fastify";
 import { createNewAccount } from "../controllers/account.js";
 import { addSource, getSources } from "../controllers/sources.js";
 import {
+  validCreatePodcast,
   validCreateScript,
   validCreateSource,
   validate,
 } from "../controllers/validation.js";
 import { generateScriptForSource } from "../controllers/scripts.js";
-import { generateVoiceFromText } from "../models/voice.js";
-import { Readable } from "stream";
-import { createReadStream } from "fs";
+import { generatePodcastFromScript } from "../controllers/podcast.js";
 
 const server = fastify({ logger: true });
 
@@ -101,9 +100,31 @@ server.post("/v1/script", async (request, reply) => {
 
 // Podcast
 server.post("/v1/podcast", async (request, reply) => {
-  const buffer = await generateVoiceFromText("Hello world");
+  const { headers, body } = request;
 
-  return reply.type("audio/mpeg").send(buffer);
+  const { data: validHeaders, error: headerError } = validate(headers);
+  if (headerError) {
+    reply.status(400).send({ message: headerError.message });
+    return;
+  }
+
+  const { data: validPodcastBody, error: createPodcastError } =
+    validCreatePodcast(body);
+  if (createPodcastError) {
+    reply.status(400).send({ message: createPodcastError.message });
+    return;
+  }
+
+  const { data, error } = await generatePodcastFromScript(
+    validHeaders.accountId,
+    validPodcastBody.scriptId
+  );
+  if (error) {
+    reply.status(500).send({ message: error.message });
+    return;
+  }
+
+  return reply.type("audio/mpeg").send(data);
 });
 
 export const api = server;

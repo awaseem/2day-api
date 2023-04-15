@@ -15,6 +15,10 @@ const CreateScriptBody = z.object({
   sourceId: z.string().uuid(),
 });
 
+const CreatePodcastBody = z.object({
+  scriptId: z.string().uuid(),
+});
+
 export function validate(headers: IncomingHttpHeaders): Return<Valid> {
   try {
     const accountId = headers["x-account-id"];
@@ -48,6 +52,17 @@ export function validCreateScript(
 ): Return<z.infer<typeof CreateScriptBody>> {
   try {
     const res = CreateScriptBody.parse(body);
+    return retData(res);
+  } catch (error) {
+    return retError(error);
+  }
+}
+
+export function validCreatePodcast(
+  body: unknown
+): Return<z.infer<typeof CreatePodcastBody>> {
+  try {
+    const res = CreatePodcastBody.parse(body);
     return retData(res);
   } catch (error) {
     return retError(error);

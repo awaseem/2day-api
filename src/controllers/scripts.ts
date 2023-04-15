@@ -1,17 +1,14 @@
 import { Script } from "@prisma/client";
 import { createPodcastScript, summarizeText } from "../models/ai.js";
-import { getTextFromUrl } from "../models/html.js";
 import { parseRss } from "../models/rss.js";
 import { createScript } from "../models/scripts.js";
 import { getSource } from "../models/source.js";
 import { ReturnPromise, retData, retError } from "../util/return.js";
 
-const MAX_ITEMS = 3;
+const MAX_ITEMS = 5;
 
 export async function getSummaryFromLink(link: string) {
-  const text = await getTextFromUrl(link);
-  const summary = await summarizeText(text);
-
+  const summary = await summarizeText(link);
   return summary;
 }
 
