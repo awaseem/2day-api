@@ -5,7 +5,7 @@ import {
   validCreatePodcast,
   validCreateScript,
   validCreateSource,
-  validate,
+  validateAccountId,
 } from "../controllers/validation.js";
 import { generateScriptForSource } from "../controllers/scripts.js";
 import { generatePodcastFromScript } from "../controllers/podcast.js";
@@ -26,7 +26,9 @@ server.post("/v1/account", async (request, reply) => {
 // Sources
 server.get("/v1/sources", async (request, reply) => {
   const { headers } = request;
-  const { data: validData, error: validateError } = validate(headers);
+  const { data: validData, error: validateError } = await validateAccountId(
+    headers
+  );
   if (validateError) {
     reply.status(400).send({ message: validateError.message });
     return;
@@ -44,7 +46,9 @@ server.get("/v1/sources", async (request, reply) => {
 server.post("/v1/source", async (request, reply) => {
   const { headers, body } = request;
 
-  const { data: validHeaders, error: headerError } = validate(headers);
+  const { data: validHeaders, error: headerError } = await validateAccountId(
+    headers
+  );
   if (headerError) {
     reply.status(400).send({ message: headerError.message });
     return;
@@ -73,7 +77,9 @@ server.post("/v1/source", async (request, reply) => {
 server.post("/v1/script", async (request, reply) => {
   const { headers, body } = request;
 
-  const { data: validHeaders, error: headerError } = validate(headers);
+  const { data: validHeaders, error: headerError } = await validateAccountId(
+    headers
+  );
   if (headerError) {
     reply.status(400).send({ message: headerError.message });
     return;
@@ -102,7 +108,9 @@ server.post("/v1/script", async (request, reply) => {
 server.post("/v1/podcast", async (request, reply) => {
   const { headers, body } = request;
 
-  const { data: validHeaders, error: headerError } = validate(headers);
+  const { data: validHeaders, error: headerError } = await validateAccountId(
+    headers
+  );
   if (headerError) {
     reply.status(400).send({ message: headerError.message });
     return;
@@ -115,7 +123,7 @@ server.post("/v1/podcast", async (request, reply) => {
     return;
   }
 
-  const { data, error } = await generatePodcastFromScript(
+  const { data: path, error } = await generatePodcastFromScript(
     validHeaders.accountId,
     validPodcastBody.scriptId
   );
@@ -124,7 +132,7 @@ server.post("/v1/podcast", async (request, reply) => {
     return;
   }
 
-  return reply.type("audio/mpeg").send(data);
+  return reply.status(200).send({ path });
 });
 
 export const api = server;

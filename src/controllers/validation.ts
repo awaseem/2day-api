@@ -1,7 +1,8 @@
 import { IncomingHttpHeaders } from "http";
-import { Return, retData } from "../util/return.js";
+import { Return, ReturnPromise, retData } from "../util/return.js";
 import { retError } from "../util/return.js";
 import { z } from "zod";
+import { getAccount } from "../models/account.js";
 
 export interface Valid {
   accountId: string;
@@ -19,16 +20,23 @@ const CreatePodcastBody = z.object({
   scriptId: z.string().uuid(),
 });
 
-export function validate(headers: IncomingHttpHeaders): Return<Valid> {
+export async function validateAccountId(
+  headers: IncomingHttpHeaders
+): ReturnPromise<Valid> {
   try {
     const accountId = headers["x-account-id"];
     if (!accountId || typeof accountId !== "string") {
       throw new Error("no account Id found");
     }
 
+    const account = await getAccount(accountId);
+    if (!account) {
+      throw new Error("no account found");
+    }
+
     return {
       data: {
-        accountId,
+        accountId: account.id,
       },
     };
   } catch (error) {
