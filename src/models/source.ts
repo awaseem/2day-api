@@ -1,55 +1,37 @@
-import { Account } from "@prisma/client";
+import { Source } from "@prisma/client";
 import { db } from "../lib/prisma.js";
-import { ReturnPromise, retData, retError } from "../util/return.js";
 
-export async function createSource(
-  accountId: string,
-  url: string
-): ReturnPromise<Account> {
-  try {
-    const createdPost = await db.source.create({
-      data: {
-        accountId,
-        url,
-      },
-    });
-
-    return retData(createdPost);
-  } catch (error) {
-    return retError(error);
-  }
+export async function createSource(accountId: string, url: string) {
+  return db.source.create({
+    data: {
+      accountId,
+      url,
+    },
+  });
 }
 
-export async function getAllSources(
-  accountId: string
-): ReturnPromise<Account[]> {
-  try {
-    const sources = await db.source.findMany({
-      where: {
-        accountId,
-      },
-    });
-
-    return retData(sources);
-  } catch (error) {
-    return retError(error);
-  }
+export async function getAllSources(accountId: string) {
+  return db.source.findMany({
+    where: {
+      accountId,
+    },
+  });
 }
 
-export async function deleteSource(
-  accountId: string,
-  sourceId: string
-): ReturnPromise<void> {
-  try {
-    await db.source.deleteMany({
-      where: {
-        accountId,
-        id: sourceId,
-      },
-    });
+export async function getSource(accountId: string, sourceId: string) {
+  return db.source.findFirst({
+    where: {
+      accountId,
+      id: sourceId,
+    },
+  });
+}
 
-    return retData(undefined);
-  } catch (error) {
-    return retError(error);
-  }
+export async function deleteSource(accountId: string, sourceId: string) {
+  await db.source.deleteMany({
+    where: {
+      accountId,
+      id: sourceId,
+    },
+  });
 }
