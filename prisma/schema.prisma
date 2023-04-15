@@ -37,8 +37,10 @@ model Script {
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
   accountId String
 
-  Source   Source? @relation(fields: [sourceId], references: [id])
-  sourceId String?
+  source   Source @relation(fields: [sourceId], references: [id])
+  sourceId String
+
+  podcastFileUrl String?
 
   @@index([accountId])
   @@index([sourceId])

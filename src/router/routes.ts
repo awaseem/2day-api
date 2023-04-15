@@ -1,5 +1,4 @@
 import fastify from "fastify";
-import { createNewAccount } from "../controllers/account.js";
 import { addSource, getSources } from "../controllers/sources.js";
 import {
   validCreatePodcast,
@@ -11,17 +10,6 @@ import { generateScriptForSource } from "../controllers/scripts.js";
 import { generatePodcastFromScript } from "../controllers/podcast.js";
 
 const server = fastify({ logger: true });
-
-// Accounts
-server.post("/v1/account", async (request, reply) => {
-  const { data, error } = await createNewAccount();
-  if (error) {
-    reply.status(500).send({});
-    return;
-  }
-
-  reply.status(200).send(data);
-});
 
 // Sources
 server.get("/v1/sources", async (request, reply) => {
@@ -123,7 +111,7 @@ server.post("/v1/podcast", async (request, reply) => {
     return;
   }
 
-  const { data: path, error } = await generatePodcastFromScript(
+  const { data, error } = await generatePodcastFromScript(
     validHeaders.accountId,
     validPodcastBody.scriptId
   );
@@ -132,7 +120,7 @@ server.post("/v1/podcast", async (request, reply) => {
     return;
   }
 
-  return reply.status(200).send({ path });
+  return reply.status(200).send(data);
 });
 
 export const api = server;

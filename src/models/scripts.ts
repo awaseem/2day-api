@@ -40,3 +40,17 @@ export async function deleteScript(accountId: string, scriptId: string) {
     },
   });
 }
+
+export async function updatePodcastFile(
+  scriptId: string,
+  podcastFileUrl: string
+) {
+  return db.script.update({
+    data: {
+      podcastFileUrl,
+    },
+    where: {
+      id: scriptId,
+    },
+  });
+}
