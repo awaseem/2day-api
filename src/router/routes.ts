@@ -8,6 +8,7 @@ import {
 } from "../controllers/validation.js";
 import { getScriptsFromSourceIds } from "../controllers/scripts.js";
 import { generatePodcastFromSourceId } from "../controllers/podcast.js";
+import { addGenPodcastJob } from "../queue/podcasts.js";
 
 const server = fastify({ logger: true });
 
@@ -92,31 +93,26 @@ server.post("/v1/scripts", async (request, reply) => {
 server.post("/v1/podcast", async (request, reply) => {
   const { headers, body } = request;
 
-  const { data: validHeaders, error: headerError } = await validateAccountId(
+  const { data: account, error: accountError } = await validateAccountId(
     headers
   );
-  if (headerError) {
-    reply.status(400).send({ message: headerError.message });
+  if (accountError) {
+    reply.status(400).send({ message: accountError.message });
     return;
   }
 
-  const { data: validPodcastBody, error: createPodcastError } =
-    validCreatePodcast(body);
-  if (createPodcastError) {
-    reply.status(400).send({ message: createPodcastError.message });
-    return;
-  }
-
-  const { data, error } = await generatePodcastFromSourceId(
-    validHeaders.accountId,
-    validPodcastBody.sourceId
+  const { accountId } = account;
+  const { data: validSource, error: sourceError } = await validCreatePodcast(
+    accountId,
+    body
   );
-  if (error) {
-    reply.status(500).send({ message: error.message });
+  if (sourceError) {
+    reply.status(400).send({ message: sourceError.message });
     return;
   }
 
-  return reply.status(200).send(data);
+  await addGenPodcastJob(accountId, validSource.id);
+  return reply.status(200).send({ message: "Job started 🚀" });
 });
 
 export const api = server;

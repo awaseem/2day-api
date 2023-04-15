@@ -3,6 +3,8 @@ import { Return, ReturnPromise, retData } from "../util/return.js";
 import { retError } from "../util/return.js";
 import { z } from "zod";
 import { getAccount } from "../models/account.js";
+import { getSource } from "../models/source.js";
+import { Source } from "@prisma/client";
 
 export interface Valid {
   accountId: string;
@@ -66,12 +68,19 @@ export function validGetScripts(
   }
 }
 
-export function validCreatePodcast(
+export async function validCreatePodcast(
+  accountId: string,
   body: unknown
-): Return<z.infer<typeof CreatePodcastBody>> {
+): ReturnPromise<Source> {
   try {
     const res = CreatePodcastBody.parse(body);
-    return retData(res);
+
+    const source = await getSource(accountId, res.sourceId);
+    if (!source) {
+      throw new Error("no source found");
+    }
+
+    return retData(source);
   } catch (error) {
     return retError(error);
   }
