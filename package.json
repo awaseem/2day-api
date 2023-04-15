@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/html-to-text": "^9.0.0",
     "@types/node": "^18.15.11",
     "nodemon": "^2.0.22",
     "prisma": "^4.12.0",

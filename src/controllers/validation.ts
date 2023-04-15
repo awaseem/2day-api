@@ -11,6 +11,10 @@ const CreateSourceBody = z.object({
   url: z.string().url(),
 });
 
+const CreateScriptBody = z.object({
+  sourceId: z.string().uuid(),
+});
+
 export function validate(headers: IncomingHttpHeaders): Return<Valid> {
   try {
     const accountId = headers["x-account-id"];
@@ -33,6 +37,17 @@ export function validCreateSource(
 ): Return<z.infer<typeof CreateSourceBody>> {
   try {
     const res = CreateSourceBody.parse(body);
+    return retData(res);
+  } catch (error) {
+    return retError(error);
+  }
+}
+
+export function validCreateScript(
+  body: unknown
+): Return<z.infer<typeof CreateScriptBody>> {
+  try {
+    const res = CreateScriptBody.parse(body);
     return retData(res);
   } catch (error) {
     return retError(error);

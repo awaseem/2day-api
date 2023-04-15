@@ -1,3 +1,4 @@
+import { getTextFromUrl } from "../models/html.js";
 import { parseRss } from "../models/rss.js";
 import { getSource } from "../models/source.js";
 
@@ -12,6 +13,10 @@ export async function generateScriptForSource(
     }
 
     const parsedRssItems = await parseRss(source.url);
+
+    const [firstItem] = parsedRssItems;
+    const text = await getTextFromUrl(firstItem.link);
+    console.log(text);
 
     return parsedRssItems;
   } catch (error) {

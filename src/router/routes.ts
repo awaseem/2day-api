@@ -1,7 +1,12 @@
 import fastify from "fastify";
 import { createNewAccount } from "../controllers/account.js";
 import { addSource, getSources } from "../controllers/sources.js";
-import { validCreateSource, validate } from "../controllers/validation.js";
+import {
+  validCreateScript,
+  validCreateSource,
+  validate,
+} from "../controllers/validation.js";
+import { generateScriptForSource } from "../controllers/scripts.js";
 
 const server = fastify({ logger: true });
 
@@ -58,6 +63,31 @@ server.post("/v1/source", async (request, reply) => {
     reply.status(500).send({ message: error.message });
     return;
   }
+
+  reply.status(200).send(data);
+});
+
+// Scripts
+server.post("/v1/script", async (request, reply) => {
+  const { headers, body } = request;
+
+  const { data: validHeaders, error: headerError } = validate(headers);
+  if (headerError) {
+    reply.status(400).send({ message: headerError.message });
+    return;
+  }
+
+  const { data: validScriptBody, error: createScriptError } =
+    validCreateScript(body);
+  if (createScriptError) {
+    reply.status(400).send({ message: createScriptError.message });
+    return;
+  }
+
+  const data = await generateScriptForSource(
+    validHeaders.accountId,
+    validScriptBody.sourceId
+  );
 
   reply.status(200).send(data);
 });
