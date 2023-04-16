@@ -11,8 +11,8 @@ export async function generateVoiceFromText(text: string) {
     body: JSON.stringify({
       text,
       voice_settings: {
-        stability: 0.5,
-        similarity_boost: 0.53,
+        stability: 0.8,
+        similarity_boost: 0.8,
       },
     }),
   });
