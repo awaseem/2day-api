@@ -6,10 +6,7 @@ import {
   validGetScript,
   validateAccountId,
 } from "../controllers/validation.js";
-import {
-  getScriptFromSourceId,
-  getScriptsFromSourceIds,
-} from "../controllers/scripts.js";
+import { getScriptFromSourceId } from "../controllers/scripts.js";
 import { addGenPodcastJob } from "../queue/podcasts.js";
 import { createNewAccount } from "../controllers/account.js";
 
