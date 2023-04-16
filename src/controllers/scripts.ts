@@ -1,12 +1,29 @@
 import { Script } from "@prisma/client";
 import { createPodcastScript } from "../models/ai.js";
 import { parseRss } from "../models/rss.js";
-import { createScript, getScriptsForSources } from "../models/scripts.js";
+import {
+  createScript,
+  getScript,
+  getScriptsForSources,
+} from "../models/scripts.js";
 import { getSource } from "../models/source.js";
 import { ReturnPromise, retData, retError } from "../util/return.js";
 import { sanitizeString } from "../util/sanitize.js";
 
 const MAX_ITEMS = 3;
+
+export async function getScriptFromSourceId(
+  accountId: string,
+  sourceIds: string
+) {
+  try {
+    const scriptWithSource = await getScript(accountId, sourceIds);
+
+    return retData(scriptWithSource);
+  } catch (error) {
+    return retError(error);
+  }
+}
 
 export async function getScriptsFromSourceIds(
   accountId: string,

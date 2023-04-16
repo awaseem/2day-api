@@ -3,10 +3,13 @@ import { addSource, getSources } from "../controllers/sources.js";
 import {
   validCreatePodcast,
   validCreateSource,
-  validGetScripts,
+  validGetScript,
   validateAccountId,
 } from "../controllers/validation.js";
-import { getScriptsFromSourceIds } from "../controllers/scripts.js";
+import {
+  getScriptFromSourceId,
+  getScriptsFromSourceIds,
+} from "../controllers/scripts.js";
 import { addGenPodcastJob } from "../queue/podcasts.js";
 import { createNewAccount } from "../controllers/account.js";
 
@@ -85,8 +88,8 @@ server.post("/v1/source", async (request, reply) => {
 });
 
 // Scripts
-server.post("/v1/scripts", async (request, reply) => {
-  const { headers, body } = request;
+server.get("/v1/script/:sourceId", async (request, reply) => {
+  const { headers, params } = request;
 
   const { data: account, error: accountError } = await validateAccountId(
     headers
@@ -97,18 +100,18 @@ server.post("/v1/scripts", async (request, reply) => {
   }
 
   const { data: getScriptsBody, error: getScriptsError } =
-    validGetScripts(body);
+    validGetScript(params);
   if (getScriptsError) {
     reply.status(400).send({ message: getScriptsError.message });
     return;
   }
 
-  const scripts = await getScriptsFromSourceIds(
+  const script = await getScriptFromSourceId(
     account.accountId,
-    getScriptsBody.sourceIds
+    getScriptsBody.sourceId
   );
 
-  return reply.status(200).send(scripts);
+  return reply.status(200).send(script);
 });
 
 // Podcast

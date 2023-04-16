@@ -35,11 +35,17 @@ export async function getScriptsForSources(
   });
 }
 
-export async function getScript(accountId: string, scriptId: string) {
+export async function getScript(accountId: string, sourceId: string) {
   return db.script.findFirst({
     where: {
       accountId,
-      id: scriptId,
+      sourceId,
+    },
+    include: {
+      source: true,
+    },
+    orderBy: {
+      createdAt: "desc",
     },
   });
 }
