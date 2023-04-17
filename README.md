@@ -92,7 +92,7 @@ The response should be the following:
 	"id": "216c988b-8092-48f3-afe5-feb58033ab3d", // <= This ID is important as its required when creating a script
 	"createdAt": "2023-04-17T03:18:14.819Z",
 	"sourceData": [
-    // List of all th source you supplied
+    // List of all the sources you supplied
     ...
 	],
   ...
