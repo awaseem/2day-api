@@ -20,7 +20,6 @@ model Account {
 
 model Source {
   id        String   @id @default(uuid())
-  url       String?  @db.VarChar(2083)
   createdAt DateTime @default(now())
 
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)

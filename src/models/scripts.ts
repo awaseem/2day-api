@@ -42,7 +42,11 @@ export async function getScript(accountId: string, sourceId: string) {
       sourceId,
     },
     include: {
-      source: true,
+      source: {
+        include: {
+          sourceData: true,
+        },
+      },
     },
     orderBy: {
       createdAt: "desc",
