@@ -111,8 +111,7 @@ server.get("/v1/script/:sourceId", async (request, reply) => {
   return reply.status(200).send(script);
 });
 
-// Podcast
-server.post("/v1/podcast", async (request, reply) => {
+server.post("/v1/script", async (request, reply) => {
   const { headers, body } = request;
 
   const { data: account, error: accountError } = await validateAccountId(
