@@ -25,13 +25,20 @@ export async function addGenPodcastJob(accountId: string, sourceId: string) {
 }
 
 podcastQueue.process(async (job, done) => {
+  console.log("STARTING JOB: ", job.id);
+
   const { accountId, sourceId } = job.data as GenPodcastJob;
 
   const { error } = await generatePodcastFromSourceId(accountId, sourceId);
   if (error) {
+    console.error(
+      "[ERROR] JOB FAILED TO PROCESS DUE TO THE FOLLOWING ERROR",
+      error
+    );
     done(error);
     return;
   }
 
+  console.log("JOB COMPLETE: ", job.id);
   done();
 });

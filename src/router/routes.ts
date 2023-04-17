@@ -7,7 +7,7 @@ import {
   validateAccountId,
 } from "../controllers/validation.js";
 import { getScriptFromSourceId } from "../controllers/scripts.js";
-import { addGenPodcastJob } from "../queue/podcasts.js";
+import { addGenPodcastJob } from "../queue/scripts.js";
 import { createNewAccount } from "../controllers/account.js";
 
 const server = fastify({ logger: true });
