@@ -1,4 +1,4 @@
-import { Script } from "@prisma/client";
+import { Script, SourceData } from "@prisma/client";
 import { createPodcastScript } from "../models/ai.js";
 import { parseRss } from "../models/rss.js";
 import {
@@ -38,6 +38,15 @@ export async function getScriptsFromSourceIds(
   }
 }
 
+async function getSourceLinks(sourceData: SourceData) {
+  if (sourceData.type === "RSS") {
+    const parsedRssItems = await parseRss(sourceData.url);
+    return parsedRssItems.map(item => item.link).splice(0, MAX_ITEMS);
+  }
+
+  return [sourceData.url];
+}
+
 export async function generateScriptForSource(
   accountId: string,
   sourceId: string
@@ -48,11 +57,11 @@ export async function generateScriptForSource(
       throw new Error("Failed to find source");
     }
 
-    const parsedRssItems = await parseRss(source.url);
+    const { sourceData } = source;
 
-    const links = parsedRssItems.map(item => item.link).splice(0, MAX_ITEMS);
+    const links = await Promise.all(sourceData.map(getSourceLinks));
 
-    const content = await createPodcastScript(links);
+    const content = await createPodcastScript(links.flat());
     if (!content) {
       throw new Error("Failed to create script");
     }

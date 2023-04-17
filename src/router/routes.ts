@@ -74,7 +74,7 @@ server.post("/v1/source", async (request, reply) => {
 
   const { data, error } = await addSource(
     validHeaders.accountId,
-    validSourceBody.url
+    validSourceBody.data
   );
   if (error) {
     reply.status(500).send({ message: error.message });

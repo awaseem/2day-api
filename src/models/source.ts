@@ -1,11 +1,25 @@
-import { Source } from "@prisma/client";
 import { db } from "../lib/prisma.js";
 
-export async function createSource(accountId: string, url: string) {
+export interface SourceDataType {
+  url: string;
+  type: string;
+}
+
+export async function createSource(
+  accountId: string,
+  sourceData: SourceDataType[]
+) {
   return db.source.create({
     data: {
       accountId,
-      url,
+      sourceData: {
+        createMany: {
+          data: sourceData,
+        },
+      },
+    },
+    include: {
+      sourceData: true,
     },
   });
 }
@@ -15,6 +29,9 @@ export async function getAllSources(accountId: string) {
     where: {
       accountId,
     },
+    include: {
+      sourceData: true,
+    },
   });
 }
 
@@ -23,6 +40,9 @@ export async function getSource(accountId: string, sourceId: string) {
     where: {
       accountId,
       id: sourceId,
+    },
+    include: {
+      sourceData: true,
     },
   });
 }

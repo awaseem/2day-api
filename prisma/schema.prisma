@@ -20,15 +20,30 @@ model Account {
 
 model Source {
   id        String   @id @default(uuid())
-  url       String   @db.VarChar(2083)
+  url       String?  @db.VarChar(2083)
   createdAt DateTime @default(now())
 
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
   accountId String
 
+  sourceData SourceData[]
+
   scripts Script[]
 
   @@index([accountId])
+}
+
+model SourceData {
+  id   String @id @default(uuid())
+  url  String @db.VarChar(2083)
+  type String
+
+  createdAt DateTime @default(now())
+
+  Source   Source @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  sourceId String
+
+  @@index([sourceId])
 }
 
 model Script {
@@ -39,7 +54,7 @@ model Script {
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
   accountId String
 
-  source   Source @relation(fields: [sourceId], references: [id])
+  source   Source @relation(fields: [sourceId], references: [id], onDelete: Cascade)
   sourceId String
 
   podcastFileUrl String?

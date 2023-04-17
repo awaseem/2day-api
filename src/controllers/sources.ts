@@ -1,13 +1,17 @@
 import { Source } from "@prisma/client";
-import { createSource, getAllSources } from "../models/source.js";
+import {
+  SourceDataType,
+  createSource,
+  getAllSources,
+} from "../models/source.js";
 import { ReturnPromise, retData, retError } from "../util/return.js";
 
 export async function addSource(
   accountId: string,
-  url: string
+  sourceData: SourceDataType[]
 ): ReturnPromise<Source> {
   try {
-    const source = await createSource(accountId, url);
+    const source = await createSource(accountId, sourceData);
     return retData(source);
   } catch (error) {
     return retError(error);

@@ -12,7 +12,12 @@ export interface Valid {
 }
 
 const CreateSourceBody = z.object({
-  url: z.string().url(),
+  data: z.array(
+    z.object({
+      type: z.enum(["RSS", "ARTICLE"]),
+      url: z.string().url(),
+    })
+  ),
 });
 
 const GetScriptsBody = z.object({
