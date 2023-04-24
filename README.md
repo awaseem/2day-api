@@ -1,6 +1,8 @@
 <h1 align="center">2Day 📻</h1>
 
-<p align="center">Transform your writing into engaging AI-generated podcasts. Ditch the mics and sound-proof rooms, and tap into a new audience base without the added effort. 2day converts your blogs and articles into audio podcasts. See it in action <a href="https://listen2day.com">here</a></p>
+Transform your writing into engaging AI-generated podcasts. Ditch the mics and sound-proof rooms, and tap into a new audience base without the added effort. 2day converts your blogs and articles into audio podcasts. See it in action [here](https://listen2day.com)
+
+Looking for the source code for the demo site? It's available [here](https://github.com/awaseem/2day-demo)
 
 # Getting started
 
